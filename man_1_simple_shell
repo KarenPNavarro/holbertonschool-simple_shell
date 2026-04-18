@@ -1,112 +1,75 @@
-.TH HSH 1 "2025" "Holberton School" "User Commands"
+.TH SHELL 1 "April 2026" "Holberton School - Simple Shell" "User Commands"
+
 .SH NAME
-hsh \- simple UNIX command line interpreter
+shell \- simple shell
+
 .SH SYNOPSIS
-.B hsh
-[\fIscript_file\fR]
+.B shell
+[\fBcommand\fR]
+
 .SH DESCRIPTION
-.B hsh
-is a simple UNIX shell written in C as part of the Holberton School curriculum.
-It reads commands from standard input or from a script file and executes them.
-.PP
-.B hsh
-supports both interactive and non-interactive modes. In interactive mode,
-a prompt
-.RB ( $ )
-is displayed and the shell waits for user input. In non-interactive mode,
-commands are read from a pipe or script file without displaying a prompt.
+.B shell
+A simple Unix shell that processes commands entered by the user and executes them, enabling direct interaction with the OS.
+
+.SH COMMANDS
+The shell supports the following commands:
+
+.TP
+.B internal commands:
+.I print_env
+\- prints the environment variables
+
+.TP
+.B external commands:
+any executable program in the system's \fBPATH\fR
+
 .SH OPTIONS
-.TP
-.B script_file
-If a filename is provided as an argument,
-.B hsh
-reads and executes commands from that file instead of standard input,
-then exits.
-.SH BUILTINS
-.TP
-.B exit [n]
-Exit the shell. If the optional argument
-.I n
-is given, it is used as the exit status. If no argument is given,
-the exit status of the last command is used.
-.TP
-.B env
-Print the current environment to standard output. Each variable is
-printed in the form
-.IR NAME=value ,
-one per line.
-.TP
-.B cd [dir]
-Change the current working directory to
-.IR dir .
-If no argument is given,
-.B cd
-changes to the directory specified by the
-.B HOME
-environment variable.
-.SH EXAMPLES
-.SS Interactive mode
-.nf
-$ ./hsh
-($) /bin/ls
-hsh main.c shell.c
-($) echo Hello
-Hello
-($) exit
-$
-.fi
-.SS Non-interactive mode
-.nf
-$ echo "/bin/ls" | ./hsh
-hsh main.c shell.c
-.fi
-.SS Script file
-.nf
-$ cat commands.txt
-/bin/ls
-/bin/pwd
-$ ./hsh commands.txt
-hsh main.c shell.c
-/home/karen/holbertonschool-simple_shell
-.fi
-.SH ENVIRONMENT
+None
+
+.SH ENVIRONMENT VARIABLES
+The shell uses the following environment variables:
+
 .TP
 .B PATH
-A colon-separated list of directories in which
-.B hsh
-searches for commands. If a command is not found in any directory
-listed in
-.BR PATH ,
-an error is printed and the exit status is set to 127.
+\- the search path for executable programs
+
 .TP
-.B HOME
-Used by
-.B cd
-when no directory argument is given.
+.B environ
+\- the environment variables
+
+.SH FUNCTIONS
+The shell provides the following functions:
+
+.TP
+.B execute(char **args, char *prog_name)
+\- executes a command using \fBexecve\fR
+
+.TP
+.B read_line(void)
+\- reads a line of input from the standard input
+
+.TP
+.B fork_execute(char **args, char *prog_name)
+\- forks a new process to execute a command
+
+.TP
+.B exec_commands(char *command, char *prog_name)
+\- tokenizes a command string into individual arguments and executes them
+
+.TP
+.B prepare_command(char *args[], char *path)
+\- prepares a command by adding the path to the executable if necessary
+
+.TP
+.B _strcspn(const char *s1, const char *s2)
+\- a custom implementation of the \fBstrcspn\fR function
+
 .SH EXIT STATUS
-.TP
-.B 0
-Success.
-.TP
-.B 1
-General error.
-.TP
-.B 126
-The command was found but could not be executed.
-.TP
-.B 127
-The command was not found.
-.SH SEE ALSO
-.BR sh (1),
-.BR bash (1),
-.BR execve (2),
-.BR fork (2),
-.BR waitpid (2),
-.BR getline (3)
-.SH BUGS
-No known bugs. Please report issues at:
+The shell exits with a status of 0 on success, and a non-zero status on failure.
+
 .br
 https://github.com/KarenPNavarro/holbertonschool-simple_shell
+
 .SH AUTHORS
 Karen Navarro and Miguel Bauzá
 .br
