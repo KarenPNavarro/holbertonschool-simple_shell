@@ -39,11 +39,9 @@ char *find_in_path(char *filename)
 	char *path = _getenv("PATH");
 	char *path_copy;/*avoids direct modif env variables*/
 
-	if (path == NULL)
-	{
-		fprintf(stderr, "Error: PATH environment variable not found.\n");
-		return (NULL);
-	}
+if (path == NULL || path[0] == '\0')
+    return (NULL);
+    
 	path_copy = strdup(path);
 	if (path_copy == NULL)
 	{

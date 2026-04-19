@@ -1,4 +1,5 @@
 #include "shell.h"
+extern int line_number;
 
 /**
 * execute- executes command using execve
@@ -145,7 +146,8 @@ void exec_commands(char *command, char *prog_name)
 		free(path);
 	}
 	else
-	{
-		fprintf(stderr, "%s: command not found\n", args[0]);
-	}
+{
+    fprintf(stderr, "%s: %d: %s: not found\n", prog_name, line_number, args[0]);
+    exit(127);
+}
 }
