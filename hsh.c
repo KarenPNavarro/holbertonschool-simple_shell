@@ -5,14 +5,17 @@
 #include <sys/wait.h>
 
 /**
- * trim - removes trailing newlines and spaces from a string
+ * trim - removes leading and trailing whitespace from a string
  * @s: the string to trim
  *
- * Return: void
+ * Return: pointer to the trimmed string
  */
-void trim(char *s)
+char *trim(char *s)
 {
 	int i;
+
+	while (*s == ' ' || *s == '\t')
+		s++;
 
 	i = strlen(s) - 1;
 	while (i >= 0 && (s[i] == '\n' || s[i] == ' ' || s[i] == '\t'))
@@ -20,6 +23,7 @@ void trim(char *s)
 		s[i] = '\0';
 		i--;
 	}
+	return (s);
 }
 
 /**
@@ -33,6 +37,7 @@ void trim(char *s)
 int main(int argc, char **argv, char **environ)
 {
 	char *line = NULL;
+	char *cmd = NULL;
 	char *args[2];
 	size_t len = 0;
 	ssize_t read;
@@ -55,12 +60,12 @@ int main(int argc, char **argv, char **environ)
 			return (0);
 		}
 
-		trim(line);
+		cmd = trim(line);
 
-		if (line[0] == '\0')
+		if (cmd[0] == '\0')
 			continue;
 
-		args[0] = line;
+		args[0] = cmd;
 		args[1] = NULL;
 
 		pid = fork();
@@ -73,9 +78,9 @@ int main(int argc, char **argv, char **environ)
 
 		if (pid == 0)
 		{
-			if (execve(line, args, environ) == -1)
+			if (execve(cmd, args, environ) == -1)
 			{
-				fprintf(stderr, "%s: No such file or directory\n", line);
+				fprintf(stderr, "%s: No such file or directory\n", cmd);
 				free(line);
 				exit(1);
 			}
