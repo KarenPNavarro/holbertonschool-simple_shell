@@ -105,6 +105,7 @@ void exec_commands(char *command, char *prog_name)
 	else
 	{
 		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, line_number, args[0]);
+		free(command);  /* free before exit to avoid leak */
 		exit(127);
 	}
 }
