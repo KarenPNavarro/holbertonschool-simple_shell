@@ -27,6 +27,34 @@ char *trim(char *s)
 }
 
 /**
+ * split - splits a string into an array of tokens by spaces
+ * @line: the string to split
+ *
+ * Return: array of strings (NULL-terminated), or NULL on failure
+ */
+char **split(char *line)
+{
+	char **args;
+	char *token;
+	int i;
+
+	args = malloc(sizeof(char *) * 64);
+	if (args == NULL)
+		return (NULL);
+
+	i = 0;
+	token = strtok(line, " \t");
+	while (token != NULL)
+	{
+		args[i] = token;
+		i++;
+		token = strtok(NULL, " \t");
+	}
+	args[i] = NULL;
+	return (args);
+}
+
+/**
  * main - entry point for the simple shell
  * @argc: argument count (unused)
  * @argv: argument vector (unused)
@@ -38,7 +66,7 @@ int main(int argc, char **argv, char **environ)
 {
 	char *line = NULL;
 	char *cmd = NULL;
-	char *args[2];
+	char **args = NULL;
 	size_t len = 0;
 	ssize_t read;
 	pid_t pid;
@@ -65,22 +93,25 @@ int main(int argc, char **argv, char **environ)
 		if (cmd[0] == '\0')
 			continue;
 
-		args[0] = cmd;
-		args[1] = NULL;
+		args = split(cmd);
+		if (args == NULL)
+			continue;
 
 		pid = fork();
 		if (pid == -1)
 		{
 			perror("fork");
+			free(args);
 			free(line);
 			return (1);
 		}
 
 		if (pid == 0)
 		{
-			if (execve(cmd, args, environ) == -1)
+			if (execve(args[0], args, environ) == -1)
 			{
-				fprintf(stderr, "%s: No such file or directory\n", cmd);
+				fprintf(stderr, "%s: No such file or directory\n", args[0]);
+				free(args);
 				free(line);
 				exit(1);
 			}
@@ -89,6 +120,7 @@ int main(int argc, char **argv, char **environ)
 		{
 			wait(NULL);
 		}
+		free(args);
 	}
 
 	free(line);
