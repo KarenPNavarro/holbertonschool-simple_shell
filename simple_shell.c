@@ -3,44 +3,37 @@
 /**
  * main- Driver
  * @ac: argument count
- * @av: argument vectori
+ * @av: argument vector
  * Return: 0 on success
  */
-
 int main(int ac __attribute__((unused)), char **av)
 {
 	char *command;
 
-	while (1)/*infinite loop*/
+	while (1)
 	{
-		command = read_line();/*read_line reads user input*/
-		if (command == NULL)/*cecks EOF (Ctrl+D)*/
-		{
+		command = read_line();
+		if (command == NULL)
 			break;
-		}
-		if (strlen(command) == 0)/*if command line is empty*/
+		if (strlen(command) == 0)
 		{
 			free(command);
 			continue;
 		}
-		exec_commands(command, av[0]);/* executes command(s) */
+		exec_commands(command, av[0]);
 		free(command);
 	}
-	/*isatty test whether a file descriptor refers to a terminal*/
 	if (isatty(STDIN_FILENO))
-	{
 		printf("\n");
-	}
 	return (0);
 }
-
 
 /**
  * print_env- Prints environment variables
  */
 void print_env(void)
 {
-	char **env = environ; /* pointer to environment variables */
+	char **env = environ;
 
 	while (*env)
 	{

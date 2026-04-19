@@ -2,65 +2,51 @@
 
 /**
  * _getenv- custom getenv()
- * searches the environment list to find the
- * environment variable name, and returns a pointer to the
- * corresponding value string
  * @name: name of the environment variable
- * Return: path
+ * Return: value string or NULL
  */
-
 char *_getenv(const char *name)
 {
-	char *path = NULL;
 	int i = 0;
 	size_t name_len = strlen(name);
 
-	while (environ[i])/* loop through environment list */
+	while (environ[i])
 	{
-		if (strncmp(environ[i], name, name_len) == 0 && environ[i][name_len] == '=')
-		{
-			path = environ[i] + name_len + 1;
-			break;
-		}
+		if (strncmp(environ[i], name, name_len) == 0 &&
+			environ[i][name_len] == '=')
+			return (environ[i] + name_len + 1);
 		i++;
 	}
-	return (path);
+	return (NULL);
 }
 
 /**
- * find_in_path-  search for executable file
+ * find_in_path- search for executable file in PATH
  * @filename: file name
- * Return: full path
+ * Return: full path or NULL
  */
 char *find_in_path(char *filename)
 {
 	char *token;
 	char full_path[1024];
 	char *path = _getenv("PATH");
-	char *path_copy;/*avoids direct modif env variables*/
+	char *path_copy;
 
-if (path == NULL || path[0] == '\0')
-    return (NULL);
-    
+	if (path == NULL || path[0] == '\0')
+		return (NULL);
+
 	path_copy = strdup(path);
 	if (path_copy == NULL)
-	{
-		fprintf(stderr, "Error: Memory allocation failed.\n");
 		return (NULL);
-	}
+
 	token = strtok(path_copy, ":");
 	while (token != NULL)
 	{
 		sprintf(full_path, "%s/%s", token, filename);
-		/*
-		 * access() system call with F_OK flag
-		 * checks if the constructed path points to
-		 * an existing file
-		 */
-		if (access(full_path, F_OK) == 0)/* F_OK tests whether the file exists */
+		if (access(full_path, F_OK) == 0)
 		{
 			free(path_copy);
-			return (strdup(full_path));/* return full path */
+			return (strdup(full_path));
 		}
 		token = strtok(NULL, ":");
 	}
@@ -83,26 +69,17 @@ void builtin_commands(char **args, char *command)
 	else if (strcmp(args[0], "env") == 0)
 	{
 		print_env();
-		return;
 	}
 }
 
 /**
- * command_path- checks relative, absolute path
+ * command_path- checks relative, absolute path or searches PATH
  * @command: command
- * Return: char* path
+ * Return: full path or NULL
  */
 char *command_path(char *command)
 {
-	char *path = NULL;
-
 	if (command[0] != '/' && command[0] != '.')
-	{
-		path = find_in_path(command);/* search in PATH */
-	}
-	else
-	{
-		path = strdup(command); /* Use the provided path */
-	}
-	return (path);
+		return (find_in_path(command));
+	return (strdup(command));
 }
