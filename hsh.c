@@ -5,6 +5,24 @@
 #include <sys/wait.h>
 
 /**
+ * trim - removes trailing newlines and spaces from a string
+ * @s: the string to trim
+ *
+ * Return: void
+ */
+void trim(char *s)
+{
+	int i;
+
+	i = strlen(s) - 1;
+	while (i >= 0 && (s[i] == '\n' || s[i] == ' ' || s[i] == '\t'))
+	{
+		s[i] = '\0';
+		i--;
+	}
+}
+
+/**
  * main - entry point for the simple shell
  * @argc: argument count (unused)
  * @argv: argument vector (unused)
@@ -37,7 +55,7 @@ int main(int argc, char **argv, char **environ)
 			return (0);
 		}
 
-		line[read - 1] = '\0';
+		trim(line);
 
 		if (line[0] == '\0')
 			continue;
@@ -57,7 +75,7 @@ int main(int argc, char **argv, char **environ)
 		{
 			if (execve(line, args, environ) == -1)
 			{
-				fprintf(stderr, "./shell: No such file or directory\n");
+				fprintf(stderr, "%s: No such file or directory\n", line);
 				free(line);
 				exit(1);
 			}
