@@ -71,6 +71,6 @@ The shell exits with a status of 0 on success, and a non-zero status on failure.
 https://github.com/KarenPNavarro/holbertonschool-simple_shell
 
 .SH AUTHORS
-Karen Navarro and Miguel Bauzá
+Karen Navarro
 .br
 Holberton School \- 2026
