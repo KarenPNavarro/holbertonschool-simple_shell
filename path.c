@@ -1,5 +1,7 @@
 #include "shell.h"
 
+extern int last_status;
+
 /**
  * _getenv- custom getenv()
  * @name: name of the environment variable
@@ -64,7 +66,10 @@ void builtin_commands(char **args, char *command)
 	if (strcmp(args[0], "exit") == 0)
 	{
 		free(command);
-		exit(0);
+		if (args[1] != NULL)
+			exit(atoi(args[1]));
+		else
+			exit(last_status); /* exit with last command's status */
 	}
 	else if (strcmp(args[0], "env") == 0)
 	{

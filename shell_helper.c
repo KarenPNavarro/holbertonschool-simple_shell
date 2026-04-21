@@ -1,5 +1,6 @@
 #include "shell.h"
 
+int last_status = 0;
 /**
  * read_line- reads user input
  * Return: command string
@@ -54,6 +55,8 @@ void fork_execute(char **args, char *prog_name)
 	else
 	{
 		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			last_status = WEXITSTATUS(status); /* save last exit code */
 	}
 }
 
