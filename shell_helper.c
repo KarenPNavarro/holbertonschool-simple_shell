@@ -97,7 +97,11 @@ void exec_commands(char *command, char *prog_name)
 	tokenize(command, args, &argc);
 	if (args[0] == NULL)
 		return;
-	builtin_commands(args, command);
+	if (strcmp(args[0], "exit") == 0 || strcmp(args[0], "env") == 0)
+	{
+		builtin_commands(args, command);
+		return;
+	}
 	path = command_path(args[0]);
 	if (path != NULL)
 	{
@@ -108,7 +112,8 @@ void exec_commands(char *command, char *prog_name)
 	else
 	{
 		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, line_number, args[0]);
-		free(command);  /* free before exit to avoid leak */
+		free(command);
 		exit(127);
 	}
 }
+
