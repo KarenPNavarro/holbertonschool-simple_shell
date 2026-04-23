@@ -1,76 +1,106 @@
-.TH SHELL 1 "April 2026" "Holberton School - Simple Shell" "User Commands"
+.TH 
+HSH 1 April 2026 Simple Shell User Commands
 
 .SH NAME
-shell \- simple shell
+shell - simple shell
 
 .SH SYNOPSIS
-.B shell
-[\fBcommand\fR]
+.B shell [command]
 
 .SH DESCRIPTION
 .B shell
-A simple Unix shell that processes commands entered by the user and executes them, enabling direct interaction with the OS.
+A simple Unix shell that processes commands entered by the user and executes
+them, enabling direct interaction with the OS. Supports both interactive and
+non-interactive mode.
 
-.SH COMMANDS
-The shell supports the following commands:
-
-.TP
-.B internal commands:
-.I print_env
-\- prints the environment variables
+.SH BUILTIN COMMANDS
 
 .TP
-.B external commands:
-any executable program in the system's \fBPATH\fR
+.B env
+Prints the current environment variables.
+
+.TP
+.B exit
+.I [status]
+Exits the shell. If no argument is given, exits with the status of the last
+executed command.
+
+.SH EXTERNAL COMMANDS
+Any executable program found in the system PATH, or specified by
+absolute or relative path.
 
 .SH OPTIONS
 None
 
 .SH ENVIRONMENT VARIABLES
-The shell uses the following environment variables:
 
 .TP
 .B PATH
-\- the search path for executable programs
-
-.TP
-.B environ
-\- the environment variables
+The search path for executable programs. If empty or unset, only absolute
+and relative paths will work.
 
 .SH FUNCTIONS
-The shell provides the following functions:
-
-.TP
-.B execute(char **args, char *prog_name)
-\- executes a command using \fBexecve\fR
 
 .TP
 .B read_line(void)
-\- reads a line of input from the standard input
+Reads a line of input from standard input. Displays a prompt in interactive
+mode.
 
 .TP
-.B fork_execute(char **args, char *prog_name)
-\- forks a new process to execute a command
+.B tokenize(char *command, char **args, int *argc)
+Tokenizes a command string into individual arguments using whitespace
+delimiters.
 
 .TP
 .B exec_commands(char *command, char *prog_name)
-\- tokenizes a command string into individual arguments and executes them
+Parses and executes a command. Handles builtins first, then searches PATH.
 
 .TP
-.B prepare_command(char *args[], char *path)
-\- prepares a command by adding the path to the executable if necessary
+.B fork_execute(char **args, char *prog_name)
+Forks a new process and executes a command using execve.
 
 .TP
-.B _strcspn(const char *s1, const char *s2)
-\- a custom implementation of the \fBstrcspn\fR function
+.B command_path(char *command)
+Returns the full path of a command, checking absolute/relative paths or
+searching PATH.
+
+.TP
+.B find_in_path(char *filename)
+Searches each directory in PATH for the given executable.
+
+.TP
+.B _getenv(const char *name)
+Custom implementation of .B getenv. Searches the environment list for
+a variable by name.
+
+.TP
+.B builtin_commands(char **args, char *command)
+Handles built-in commands: exit and env.
+
+.TP
+.B print_env(void)
+Prints all current environment variables to standard output.
 
 .SH EXIT STATUS
-The shell exits with a status of 0 on success, and a non-zero status on failure.
+
+.TP
+.B 0
+Success.
+
+.TP
+.B 127
+Command not found.
+
+.TP
+.B other
+Exit status of the last executed command when using exit with no
+argument.
 
 .br
 https://github.com/KarenPNavarro/holbertonschool-simple_shell
 
-.SH AUTHORS
+.SH 
+AUTHOR
 Karen Navarro
 .br
-Holberton School \- 2026
+Holberton School 2026
